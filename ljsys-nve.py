@@ -30,7 +30,7 @@ def lfrog(x, y, z, vx, vy, vz, h): # Leap frog method
             if r < sigma * 0.9: coll = True
             r_list.append(r)
 
-    if coll == True:
+    if coll == True: # In the case of collision
         next_x = x - vx * h
         next_y = y - vy * h
         next_z = z - vz * h
@@ -62,9 +62,9 @@ vz0_list = []
 ljsp_list = []
 
 for i in range(0, na): # Generate initial positions and velocities
-    x0_list.append(blength * random())
-    y0_list.append(blength * random())
-    z0_list.append(blength * random())
+    x0_list.append(blength * random() - blength / 2)
+    y0_list.append(blength * random() - blength / 2)
+    z0_list.append(blength * random() - blength / 2)
     vx0_list.append(random())
     vy0_list.append(random())
     vz0_list.append(random())
@@ -115,19 +115,17 @@ while 1: # Iteration
         y = y0_list[i]
         z = z0_list[i]
 
-        if blength < x: # Periodic boundary condition
+        if blength / 2 < x: # Periodic boundary condition
             x = x - blength
-        if 0 > x:
+        if -blength / 2 > x:
             x = x + blength
-        if blength < y:
+        if blength / 2 < y:
             y = y - blength
-        if 0 > y:
+        if -blength / 2 > y:
             y = y + blength
-        if blength < z:
+        if blength / 2 < z:
             z = z - blength
-        if 0 > z:
+        if -blength / 2 > z:
             z = z + blength
 
-        ljsp_list[i].pos = vector(x - blength / 2, # Move the box center
-                                  y - blength / 2,
-                                  z - blength / 2)
+        ljsp_list[i].pos = vector(x,y,z)
