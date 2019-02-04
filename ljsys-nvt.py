@@ -9,18 +9,18 @@ def lj_force(r_list): # Function for LJ potential
         ((sigma / r_list[i]) ** 7)) / sigma
     return lj_force
 
-def langevin_thermo(ganmma=0.1):
-    random_force = np.random.normal(0,2 * ganmma * t)
-    return - ganmma + random_force
+def langevin_thermo(v, ganmma=0.1):
+    random_force = np.random.normal(0,2 * ganmma * t * h)
+    return - ganmma * v + random_force / m
 
 def lfrog(x, y, z, vx, vy, vz, h): # Leap frog method
     coll = False
     r_list = []
 
     for i in range(0, na):
-        dx = x - x0_list[i]
-        dy = y - y0_list[i]
-        dz = z - z0_list[i]
+        dx = np.abs(x - x0_list[i])
+        dy = np.abs(y - y0_list[i])
+        dz = np.abs(z - z0_list[i])
 
         if dx > (blength / 2):
             dx = dx - blength
@@ -38,23 +38,23 @@ def lfrog(x, y, z, vx, vy, vz, h): # Leap frog method
         next_x = x - vx * h
         next_y = y - vy * h
         next_z = z - vz * h
-        next_vx = -vx + langevin_thermo()
-        next_vy = -vy + langevin_thermo()
-        next_vz = -vz + langevin_thermo()
+        next_vx = -vx + langevin_thermo(vx)
+        next_vy = -vy + langevin_thermo(vy)
+        next_vz = -vz + langevin_thermo(vz)
     else:
         next_x = x + vx * h
         next_y = y + vy * h
         next_z = z + vz * h
-        next_vx = vx + lj_force(r_list) * h / m + langevin_thermo()
-        next_vy = vy + lj_force(r_list) * h / m + langevin_thermo()
-        next_vz = vz + lj_force(r_list) * h / m + langevin_thermo()
+        next_vx = vx + lj_force(r_list) * h / m + langevin_thermo(vx)
+        next_vy = vy + lj_force(r_list) * h / m + langevin_thermo(vy)
+        next_vz = vz + lj_force(r_list) * h / m + langevin_thermo(vz)
     return [next_x,next_y,next_z], [next_vx,next_vy,next_vz]
 
 i = 0 # Set up initial values
-h = 0.1
-t = 0.1
+h = 0.5
+t = 1
 m = 1
-na = 300
+na = 1000
 sigma = 1
 epsilon = 1
 blength = 20
@@ -70,14 +70,14 @@ for i in range(0, na): # Generate initial positions and velocities
     x0_list.append(blength * random() - blength / 2)
     y0_list.append(blength * random() - blength / 2)
     z0_list.append(blength * random() - blength / 2)
-    vx0_list.append(random())
-    vy0_list.append(random())
-    vz0_list.append(random())
+    vx0_list.append(random() - 0.5)
+    vy0_list.append(random() - 0.5)
+    vz0_list.append(random() - 0.5)
 
 for i in range(0, na): # Set objects
     ljsp = sphere(pos=vector(x0_list[i],y0_list[i],z0_list[i]),
                   color=color.green,
-                  radius=sigma * 0.9)
+                  radius=sigma * 0.9 / 2)
     ljsp_list.append(ljsp)
 
 box0 = box(pos=vector(0,-blength / 2,0),
@@ -120,17 +120,17 @@ while 1: # Iteration
         y = y0_list[i]
         z = z0_list[i]
 
-        if blength / 2 < x: # Periodic boundary condition
+        if (blength / 2) < x: # Periodic boundary condition
             x = x - blength
-        if -blength / 2 > x:
+        if -(blength / 2) > x:
             x = x + blength
-        if blength / 2 < y:
+        if (blength / 2) < y:
             y = y - blength
-        if -blength / 2 > y:
+        if -(blength / 2) > y:
             y = y + blength
-        if blength / 2 < z:
+        if (blength / 2) < z:
             z = z - blength
-        if -blength / 2 > z:
+        if -(blength / 2) > z:
             z = z + blength
 
         ljsp_list[i].pos = vector(x,y,z)
