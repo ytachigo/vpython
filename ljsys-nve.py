@@ -1,6 +1,7 @@
 from vpython import *
 import numpy as np
 import copy as cp
+import os
 
 def lj_force(r_list): # Function for LJ potential
     lj_force = 0
@@ -27,7 +28,7 @@ def lfrog(x, y, z, vx, vy, vz, h): # Leap frog method
 
         r = np.sqrt(dx * dx + dy * dy + dz * dz)
         if r != 0:
-            if r < sigma * 0.9: coll = True
+            if r < sigma * 0.9: coll = False
             r_list.append(r)
 
     if coll == True: # In the case of collision

@@ -1,6 +1,7 @@
 from vpython import *
 import numpy as np
 import copy as cp
+from PIL import ImageGrab
 
 def lj_force(r_list): # Function for LJ potential
     lj_force = 0
@@ -65,6 +66,7 @@ vx0_list = []
 vy0_list = []
 vz0_list = []
 ljsp_list = []
+interval = 2
 
 for i in range(0, na): # Generate initial positions and velocities
     x0_list.append(blength * random() - blength / 2)
@@ -134,3 +136,8 @@ while 1: # Iteration
             z = z + blength
 
         ljsp_list[i].pos = vector(x,y,z)
+
+        if i % interval == 0: # Save the images
+            im = ImageGrab.grab((0,1000,1280,2000))
+            filename = 'img%d.png' % i
+            im.save(filename)
