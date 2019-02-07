@@ -55,10 +55,10 @@ i = 0 # Set up initial values
 h = 0.5
 t = 1
 m = 1
-na = 1000
+na = 300
 sigma = 1
 epsilon = 1
-blength = 20
+blength = 8 
 x0_list = []
 y0_list = []
 z0_list = []
@@ -66,7 +66,7 @@ vx0_list = []
 vy0_list = []
 vz0_list = []
 ljsp_list = []
-interval = 2
+interval = 1
 
 for i in range(0, na): # Generate initial positions and velocities
     x0_list.append(blength * random() - blength / 2)
@@ -137,7 +137,7 @@ while 1: # Iteration
 
         ljsp_list[i].pos = vector(x,y,z)
 
-        if i % interval == 0: # Save the images
+        if i % na == 0: # Save the images
             im = ImageGrab.grab((0,1000,1280,2000))
-            filename = 'img%d.png' % i
+            filename = 'img.%d.png' % i
             im.save(filename)
