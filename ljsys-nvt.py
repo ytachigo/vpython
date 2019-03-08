@@ -137,7 +137,7 @@ while 1: # Iteration
 
         ljsp_list[i].pos = vector(x,y,z)
 
-        if i % na == 0: # Save the images
-            im = ImageGrab.grab((0,1000,1280,2000))
+        if i % na == 0: # Save the images. Fix it!
+            im = ImageGrab.grab((0, 1000, 1280, 2000))
             filename = 'img.%d.png' % i
             im.save(filename)
